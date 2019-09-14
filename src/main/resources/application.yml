@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/work_daily?useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: root
+
+# 日志
+logging:
+  level:
+    root: warm
+    com.frees.mybatisplus.dao: trace
+  pattern:
+    console: ' %p%m%n'
+
+# mybatis-plus
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: UUID
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+server:
+  port: 8085

@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工作日志</title>
+
+    <link rel="stylesheet" type="text/css" href="../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css">
+    <script type="text/javascript" src="../../jquery.min.js"></script>
+    <script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../myJs/comm.js"></script>
+    <script type="text/javascript" src="../../myJs/datagrid-dnd.js"></script>
+</head>
+<body>
+<div style="margin-top:30px;margin-left: 10px;margin-right: 10px">
+<div><table  id="dg" style="height: 300px"></table></div>
+<div><table  id="detail-table" style="height:250px" ></table></div>
+    <div id="tb" style="padding:2px 5px;">
+        当前项目：
+        <select class="easyui-combobox" panelHeight="auto" style="width:300px" id="select-log-projectId"></select>
+        <div class="datagrid-toolbar"></div>
+        重要等级：
+        <select class="easyui-combobox" panelHeight="auto" style="width:100px" id="select-log-level">
+            <option value="" >&nbsp;</option>
+            <option value="1">重要紧急</option>
+            <option value="2">重要不紧急</option>
+            <option value="3">紧急不重要</option>
+            <option value="4">都不</option>
+        </select>
+        创建时间: <input class="easyui-datebox" style="width:110px" id="select-log-date">
+        标题：<input class="easyui-textbox" style="width:110px" id="select-log-title">
+        类型:
+        <select class="easyui-combobox" panelHeight="auto" style="width:100px" id="select-log-type">
+            <option value="" >&nbsp;</option>
+            <option value="1">计划</option>
+            <option value="2">突发</option>
+            <option value="3">备忘</option>
+            <option value="4">问题</option>
+            <option value="5">总结</option>
+            <option value="6">番茄钟</option>
+            <option value="7">日结</option>
+        </select>
+        开始时间: <input class="easyui-datetimebox" style="width:110px" id="select-log-startTime">
+        结束时间: <input class="easyui-datetimebox" style="width:110px" id="select-log-endTime">
+        状态:
+        <select class="easyui-combobox" panelHeight="auto" style="width:100px" id="select-log-status">
+            <option value="" >&nbsp;</option>
+            <option value="1">完成</option>
+            <option value="2" >未完成</option>
+            <option value="3">搁置</option>
+        </select>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="search">Search</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="workModel">工作模式</a>
+
+        <div class="datagrid-toolbar"></div>
+
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="add-logDetail" >明细</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" id="save-logDetail" data-options="disabled:true">明细</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="cancel-logDetail" data-options="disabled:true">明细</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="del-logDetail" data-options="disabled:true">明细</a>
+        <div class="datagrid-btn-separator" />
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#w').window('open')"></a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" id="save-log" data-options="disabled:true"></a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="cancel-log" data-options="disabled:true"></a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="del-log" data-options="disabled:true"></a>
+
+
+
+
+    </div>
+
+    <div id="add-logDetail-page" class="easyui-window" title="新增工作日志明细" data-options="closed:true" style="width:500px;padding:10px;">
+        <div style="margin:20px">
+            <div style="margin-bottom:20px">
+                <div>序号:</div>
+                <input class="easyui-numberbox easyui-validatebox" data-options="prompt:'序号'" style="width:100%;height:32px" required="true" id="add-logDetail-seq" data-options="min:0,precision:0">
+            </div>
+            <div style="margin-bottom:20px">
+                <div>内容:</div>
+                <input class="easyui-textbox easyui-validatebox" data-options="prompt:'内容'" style="width:100%;height:32px" required="true" id="add-logDetail-content">
+            </div>
+            <div style="margin-bottom:20px">
+                <div>耗时:</div>
+                <input class="easyui-numberbox easyui-validatebox" data-options="prompt:'耗时'" style="width:100%;height:32px"  id="add-logDetail-useTime">
+            </div>
+            <div style="margin-bottom:20px">
+                <div>备注:</div>
+                <input class="easyui-textbox easyui-validatebox" data-options="prompt:'备注'" style="width:100%;height:32px" id="add-logDetail-remark">
+            </div>
+            <div>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" style="width:200px;height:32px" id="add-logDetail-ok"  >确定</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" style="width:200px;height:32px" id="add-logDetail-cancel" onclick="$('#add-logDetail-page').window('close')">取消</a>
+            </div>
+        <div/>
+    <div/>
+
+
+    <div id="w" class="easyui-window" title="新增工作日志" data-options="closed:true" style="width:500px;padding:10px;">
+        <div style="margin:20px">
+            <div style="margin-bottom:20px">
+                <div>重要等级:</div>
+                <select class="easyui-combobox" panelHeight="auto" style="width:100px" id="add-log-level">
+                    <option value="1">重要紧急</option>
+                    <option value="2">重要不紧急</option>
+                    <option value="3">紧急不重要</option>
+                    <option value="4" selected="selected">都不</option>
+                </select>
+            </div>
+            <div style="margin-bottom:20px">
+                <div>标题:</div>
+                <input class="easyui-textbox easyui-validatebox" data-options="prompt:'标题'" style="width:100%;height:32px;" required="true" id="add-log-title">
+            </div>
+            <div style="margin-bottom:20px">
+                <div>类型:</div>
+                <select class="easyui-combobox" panelHeight="auto" style="width:100px" id="add-log-type">
+                    <option value="1">计划</option>
+                    <option value="2">突发</option>
+                    <option value="3">备忘</option>
+                    <option value="4">问题</option>
+                    <option value="5">总结</option>
+                    <option value="6">番茄钟</option>
+                    <option value="7">日结</option>
+                </select>
+            </div>
+            <div style="margin-bottom:20px">
+                <div>状态:</div>
+                <select class="easyui-combobox" panelHeight="auto" style="width:100px" id="add-log-status">
+                    <option value="1">完成</option>
+                    <option value="2" selected="selected">未完成</option>
+                    <option value="3">搁置</option>
+                </select>
+            </div>
+
+            <div>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" style="width:200px;height:32px" id="add-log-ok"  >确定</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" style="width:40%;height:32px" id="add-log-cancel" onclick="$('#w').window('close')">取消</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+
+        // 当前选中的log行 的id
+        var chosedLogId = null;
+
+        var chosedLogDetailId = null;
+
+        // 当前处于编辑状态中的行的 index
+        var editingRowIndex = null;
+        var editingRowIndexLogDetail = null;
+
+        // 上次选中行对象
+        var lastChosedRowObj1 = null;
+        var lastChosedRowObj2 = null;
+
+        // var logUrl = "/workdaily/log/query.do";
+        var logUrl = "/workdaily/log/workQuery.do";
+
+        // 赋值默认项目，等用户登录功能完善后去除
+        changeProjectId();
+
+        $('#dg').datagrid({
+            url:logUrl,
+            queryParams:{
+                "projectId":$("#select-log-projectId").combobox("getValue"),
+                "level":$("#select-log-level").combobox("getValue"),
+                "date":$("#select-log-date").combobox("getValue"),
+                "title":$("#select-log-title").val(),
+                "type":$("#select-log-type").combobox("getValue"),
+                "startTime":$("#select-log-startTime").combobox("getValue"),
+                "endTime":$("#select-log-endTime").combobox("getValue"),
+                "status":$("#select-log-status").combobox("getValue"),
+            },
+            method: "post",
+            toolbar: "#tb",
+            footer:"#ft",
+            idField: "id",
+            singleSelect: true,
+            fitColumns: true,
+            rownumbers:true,
+            // nowrap: false,
+            columns:[[
+                {field:'id',title:'Code',hidden:true},
+                {field:'projectId',title:'Name',hidden:true},
+                {field:'name',title:'项目名称'},
+                {field:'level',title:'重要等级',
+                    formatter: function(value,row,index){
+                        if (value == 1){
+                            return "重要紧急";
+                        } else if( value ==2){
+                            return "重要不紧急"
+                        } else if( value ==3){
+                            return "紧急不重要"
+                        } else {
+                            return "都不";
+                        }
+                    },editor:{
+                        type:'combobox',
+                        options:{
+                            valueField:'key',
+                            textField:'value',
+                            data:[
+                                {"key":"1","value":"紧急重要"},
+                                {"key":"2","value":"紧急不重要"},
+                                {"key":"3","value":"重要不紧急"},
+                                {"key":"4","value":"都不"},
+                            ],
+                            required:true
+                        }
+                    }
+                },
+                {field:'date',title:'创建日期',align:'center',
+                },
+                {field:'title',title:'标题',width: 300,
+                    editor: {
+                        type: 'text'
+                    }
+                },
+                {field:'type',title:'类型',width: 80,
+                    formatter: function(value,row,index){
+                        if (value == 1){
+                            return "计划";
+                        } else if( value ==2){
+                            return "突发";
+                        } else if( value ==3){
+                            return "备忘";
+                        } else if( value ==4){
+                            return "问题";
+                        } else if( value ==5){
+                            return "总结";
+                        } else if( value ==6){
+                            return "番茄钟";
+                        } else {
+                            return "日结";
+                        }
+                    },
+                    editor:{
+                        type:'combobox',
+                        options:{
+                            valueField:'key',
+                            textField:'value',
+                            data:[
+                                {"key":"1","value":"计划"},
+                                {"key":"2","value":"突发"},
+                                {"key":"3","value":"备忘"},
+                                {"key":"4","value":"问题"},
+                                {"key":"5","value":"总结"},
+                                {"key":"6","value":"番茄钟"},
+                                {"key":"7","value":"日结"},
+                            ],
+                            required:true
+                        }
+                    }
+                },
+                {field:'startTime',title:'开始时间',align:'center',
+                    editor:{
+                        type:'datetimebox',
+                        required:true
+                    }
+                },
+                {field:'endTime',title:'结束时间',align:'center',
+                    editor:{
+                        type:'datetimebox',
+                        required:true
+                    }
+                },
+                {field:'useTime',title:'耗时',
+                    formatter: function (value,row,index){
+                        if (isNaN(value) || value == null || undefined == value) {
+                            // 开始、结束时间有时，耗时 没有时，则返回其差值
+                            // var startTimeStr = row.startTime;
+                            // var endTimeStr = row.endTime;
+                            // if (startTimeStr != null && startTimeStr != undefined
+                            //     && endTimeStr != null && endTimeStr != undefined) {
+                            //     startTimeStr = startTimeStr.substring(0,19);
+                            //     startTimeStr = startTimeStr.replace(/-/g,'/');
+                            //     var startTime = new Date(startTimeStr).getTime();
+                            //
+                            //     endTimeStr = endTimeStr.substring(0,19);
+                            //     endTimeStr = endTimeStr.replace(/-/g,'/');
+                            //     var endTime = new Date(endTimeStr).getTime();
+                            //     var minitues = Math.floor((endTime - startTime)/(60*1000));
+                            //     return myselfFormatTime(minitues);
+                            // }
+                            return ;
+                        }
+                        return myselfFormatTime(value);
+                    },
+                    editor:{
+                        type:'numberbox'
+                    }
+                },
+                {field:'status',title:'状态',width: 80,
+                    formatter: function(value,row,index){
+                        if (value == 1){
+                            return "完成";
+                        } else if( value ==2){
+                            return "未完成"
+                        } else if( value ==3){
+                            return "搁置"
+                        }
+                    },
+                    editor:{
+                        type:'combobox',
+                        options:{
+                            valueField:'key',
+                            textField:'value',
+                            data:[
+                                {"key":"1","value":"完成"},
+                                {"key":"2","value":"未完成"},
+                                {"key":"3","value":"搁置"},
+                            ],
+                            required:true
+                        }
+                    }},
+                {field:'remark',title:'备注',width:500}
+            ]],
+            loadFilter: function(data){
+                return data.data;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                // 单击获取log id
+                chosedLogId = rowData.id;
+                getLogDetail(chosedLogId);
+                console.log(chosedLogId);
+                // $("#detail-table").datagrid("load");
+
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                // 双击编辑
+                if (editingRowIndex != null){
+                    $('#dg').datagrid('cancelEdit', editingRowIndex);
+                }
+
+                $('#dg').datagrid('beginEdit', rowIndex);
+                editingRowIndex = rowIndex;
+
+
+            },
+            onBeforeEdit:function(index,row){
+                row.editing = true;
+                updateActions('#dg',index);
+
+                $("#save-log").linkbutton('enable');
+                $("#cancel-log").linkbutton('enable');
+            },
+            onAfterEdit:function(index,row){
+                row.editing = false;
+                updateActions('#dg',index);
+
+                $("#save-log").linkbutton('disable');
+                $("#cancel-log").linkbutton('disable');
+            },
+            onCancelEdit:function(index,row){
+                row.editing = false;
+                updateActions('#dg',index);
+
+                $("#save-log").linkbutton('disable');
+                $("#cancel-log").linkbutton('disable');
+            },
+            rowStyler: function(index,row){
+                if (row.status == 1 || row.status == 3){
+                    return 'background-color:#BFBFBF;'; // return inline style
+                    // the function can return predefined css class and inline style
+                    // return {class:'r1', style:{'color:#fff'}};
+                }else if (row.level == 1) { // 重要紧急
+                    return 'color:#FF0000;'; // return inline style
+                }else if (row.level == 2) {// 重要不紧急
+                    return 'color:#A0522D;'; // return inline style
+                }else if (row.level == 3) {// 紧急不重要
+                    return 'color:#008000;'; // return inline style
+                }else if (row.level == 4) {// 都不
+                    // return 'color:#BFBFBF;'; // return inline style
+                }
+            },
+            onSelect: function (index, row) {
+                //获取所有行数据
+                var rows = $("#dg").datagrid('getData').rows;
+                var length = rows.length;
+                //遍历获取索引很关键
+                var rowindex;
+                console.log(chosedLogId);
+                for (var i = 0; i < length; i++) {
+                    if (rows[i].id == chosedLogId) {
+                        rowindex = i;
+                        break;
+                    }
+                }
+                var rowData = rows[rowindex];
+
+                // 上次的选中行颜色 改回
+                if (lastChosedRowObj1 != null && rowData != null ) {
+                    if (rowData.status == 1){
+                        lastChosedRowObj1.css('background-color','#BFBFBF');
+                        lastChosedRowObj1.css('color','#000');
+                    }else if (rowData.level == 1) { // 重要紧急
+                        lastChosedRowObj1.css('color','#FF0000');
+                    }else if (rowData.level == 2) {// 重要不紧急
+                        lastChosedRowObj1.css('color','#A0522D');
+                    }else if (rowData.level == 3) {// 紧急不重要
+                        lastChosedRowObj1.css('color','#008000');
+                    }else if (rowData.level == 4) {// 都不
+                        lastChosedRowObj1.css('color','#000');
+                    }
+                }
+                if (lastChosedRowObj2 != null && rowData != null) {
+                    if (rowData.status == 1){
+                        lastChosedRowObj2.css('background-color','#BFBFBF');
+                        lastChosedRowObj2.css('color','#000');
+                    }else if (rowData.level == 1) { // 重要紧急
+                        lastChosedRowObj2.css('color','#FF0000');
+                    }else if (rowData.level == 2) {// 重要不紧急
+                        lastChosedRowObj2.css('color','#A0522D');
+                    }else if (rowData.level == 3) {// 紧急不重要
+                        lastChosedRowObj2.css('color','#008000');
+                    }else if (rowData.level == 4) {// 都不
+                        lastChosedRowObj2.css('color','#000');
+                    }
+                }
+
+
+                var opt = $(this).datagrid("options");
+                var rows1 = opt.finder.getTr(this, "", "selected", 1);
+                var rows2 = opt.finder.getTr(this, "", "selected", 2);
+                if (rows1.length > 0) {
+                    $(rows1).each(function () {
+                        var tempIndex = parseInt($(this).attr("datagrid-row-index"));
+                        if (tempIndex == index) {
+                            // $(this).css('background','#FFFFFF');
+                            $(this).css('color','#FFF');
+                            lastChosedRowObj1 = $(this);
+                        }
+                    });
+                }
+                if (rows2.length > 0) {
+                    $(rows2).each(function () {
+                        var tempIndex = parseInt($(this).attr("datagrid-row-index"));
+                        if (tempIndex == index) {
+                            // $(this).css('background', '#FFFFFF');
+                            $(this).css('color','#FFF');
+                            lastChosedRowObj2 = $(this);
+                        }
+                    });
+                }
+
+                $("#del-log").linkbutton('enable');
+
+            },
+            // onUnselect: function (index, row) {
+            //
+            // }
+        });
+
+        $("#search").click(function () {
+            logUrl = "/workdaily/log/query.do";
+            var op = $("#dg").datagrid("options");//获取 option设置对象
+            op.url = logUrl;//设置url
+            $('#dg').datagrid({
+                url:logUrl
+                ,queryParams:{
+                "projectId":$("#select-log-projectId").combobox("getValue"),
+                "level":$("#select-log-level").combobox("getValue"),
+                "date":$("#select-log-date").combobox("getValue"),
+                "title":$("#select-log-title").val(),
+                "type":$("#select-log-type").combobox("getValue"),
+                "startTime":$("#select-log-startTime").combobox("getValue"),
+                "endTime":$("#select-log-endTime").combobox("getValue"),
+                "status":$("#select-log-status").combobox("getValue"),
+            }
+            });
+        });
+
+        $("#workModel").click(function () {
+            logUrl = "/workdaily/log/workQuery.do";
+            var op = $("#dg").datagrid("options");//获取 option设置对象
+            op.url = logUrl;//设置url
+            $('#dg').datagrid({url:logUrl
+                ,queryParams:{
+                "projectId":$("#select-log-projectId").combobox("getValue"),
+            }});
+        });
+
+        // 新增 日志
+        $("#add-log-ok").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/log/add.do' ,
+                data: {
+                    "level":$("#add-log-level").combobox("getValue"),
+                    "type":$("#add-log-type").combobox("getValue"),
+                    "status":$("#add-log-status").combobox("getValue"),
+                    "title":$("#add-log-title").val(),
+                    "projectId":$("#select-log-projectId").combobox("getValue"),
+                } ,
+                success: function(data){
+                    if ( showResult(data)){
+                        $('#dg').datagrid('reload');
+                        $('#w').window('close');
+                    }
+
+                    // 清楚原有的文本框的值，下次待用
+                    $("#add-log-title").textbox("setValue","");
+                }
+            });
+        });
+
+        $("#select-log-projectId").combobox ({
+            editable : false,
+            url : "/workdaily/project/query.do",//url
+            loadFilter: function(data){
+                return data.data;
+            },
+            valueField : "id", //相当于 option 中的 value 发送到后台的
+            textField : "name",//option中间的内容 显示给用户看的
+            onChange: function (newValue, oldValue) {
+                console.log(newValue);
+                $('#dg').datagrid('reload',{
+                    "projectId":newValue
+                });
+
+                // 更新当前用户的 当前项目，下次登录备用
+                $.ajax({
+                    type: 'POST',
+                    url: '/workdaily/user/update.do' ,
+                    data: {
+                        "id":"dengping",// 默认用户 dengping
+                        "nowProject":newValue
+                    } ,
+                    success: function(data){
+                        if ( showResult(data , false)){
+                            // if (data.nowProject != null) {
+                            //     $("#select-log-projectId").combobox('setValue',data.nowProject);
+                            // }
+                        }
+
+                    }
+                });
+            }
+        });
+
+        // 赋值默认项目，等用户登录功能完善后去除
+        $("#select-log-projectId").combobox('setValue',"2d280fc5a8f25ba1a7d6bc091e1f434c");
+
+        $("#del-log").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            if (chosedLogId == null){
+                $.messager.alert(
+                    "","请选中一行数据","error"
+                );
+                return false;
+            }
+
+            $.messager.confirm('', '删除当前数据？', function(r){
+                if (r){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/workdaily/log/delete.do' ,
+                        data: {
+                            "id":chosedLogId
+                        } ,
+                        success: function(data){
+                            if ( showResult(data)){
+                                $('#dg').datagrid('reload');
+                                chosedLogId = null;
+                            }
+                        }
+                    });
+                }
+            });
+
+
+
+        });
+        $("#cancel-log").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            if (editingRowIndex != null) {
+                $('#dg').datagrid('cancelEdit', editingRowIndex);
+            }else {
+                $.messager.show({
+                    title:'提示',
+                    msg:"无正在编辑行，无法取消编辑",
+                    showType:'show'
+                });
+            }
+            editingRowIndex = null;
+        });
+
+        $("#save-log").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            // if(editingRowIndex == null){
+            //     $.messager.show({
+            //         title:'提示',
+            //         msg:"请先选择一行日志进入编辑状态",
+            //         showType:'show'
+            //     });
+            //     return false;
+            // }
+            $('#dg').datagrid('endEdit', editingRowIndex);
+            var rows = $('#dg').datagrid('getRows');    // get current page rows
+            var row = rows[editingRowIndex];    // your row data
+            editingRowIndex = null; // 还原
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/log/update.do' ,
+                data: row,
+                success: function(data){
+                    if ( showResult(data)){
+                        $('#dg').datagrid('reload');
+                    }
+
+                }
+            });
+        });
+
+        function updateActions(tableId , index) {
+            $(tableId).datagrid('updateRow', {
+                index: index,
+                row: {}
+            });
+        }
+
+        function getRowIndex(target){
+            var tr = $(target).closest('tr.datagrid-row');
+            return parseInt(tr.attr('datagrid-row-index'));
+        }
+
+
+
+        // 获取 对应的明细
+        function getLogDetail(logId) {
+            $('#detail-table').datagrid({
+                url:'/workdaily/log-detail/query.do',
+                queryParams:{
+                    "logId":logId
+                },
+                method: "post",
+                idField: "id",
+                singleSelect: true,
+                fitColumns: true,
+                rownumbers:true,
+                nowrap: false,
+                // striped: true,
+                columns:[[
+                    {field:'id',title:'Code',hidden:true},
+                    {field:'logId',title:'Name',hidden:true},
+                    {field:'seq',title:'序号',hidden:true,
+                        editor:{
+                            type:'numberbox'
+                        }
+                    },
+                    {field:'content',title:'内容',width: 30,
+                        editor: {
+                            type: 'text'
+                        }
+                    },
+                    {field:'status',title:'状态',
+                        formatter: function(value,row,index){
+                        var isChecked = '';
+                            if (value == 1){
+                                isChecked = 'checked' ;
+                            } else if( value ==2){
+
+                            }
+                            var str ='<input  class="easyui-switchbutton" '+isChecked+' style="width:100px;height:30px" data-index ="'+index+'">';
+                            return str;
+                        },
+                    },
+                    {field:'startTime',title:'开始时间',width: 10,align:'center',
+                        editor:{
+                            type:'datetimebox',
+                        }
+                    },
+                    {field:'endTime',title:'结束时间',width: 10,align:'center',
+                        editor:{
+                            type:'datetimebox',
+                        }
+
+                    },
+                    {field:'useTime',title:'耗时',width: 10,align:'center',
+                        formatter: function (value,row,index){
+                            if (isNaN(value) || value == null || undefined == value) {
+                                // 开始、结束时间有时，耗时 没有时，则返回其差值
+                                // var startTimeStr = row.startTime;
+                                // var endTimeStr = row.endTime;
+                                // if (startTimeStr != null && startTimeStr != undefined
+                                //     && endTimeStr != null && endTimeStr != undefined) {
+                                //     startTimeStr = startTimeStr.substring(0,19);
+                                //     startTimeStr = startTimeStr.replace(/-/g,'/');
+                                //     var startTime = new Date(startTimeStr).getTime();
+                                //
+                                //     endTimeStr = endTimeStr.substring(0,19);
+                                //     endTimeStr = endTimeStr.replace(/-/g,'/');
+                                //     var endTime = new Date(endTimeStr).getTime();
+                                //     var minitues = Math.floor((endTime - startTime)/(60*1000));
+                                //     return myselfFormatTime(minitues);
+                                // }
+                                return ;
+                            }
+                            return myselfFormatTime(value);
+                        },
+                        editor:{
+                            type:'numberbox'
+                        }
+                    },
+                    {field:'remark',title:'备注',width: 30,
+                        editor: {
+                            type: 'text'
+                        }
+                    }
+                ]],
+                loadFilter: function(data){
+                    return data.data;
+                },
+                onClickRow: function (rowIndex, rowData) {
+                    // 单击获取logDetail id
+                    chosedLogDetailId = rowData.id;
+                    console.log('chosed'+chosedLogDetailId);
+                    // getLogDetail(chosedLogId);
+                    // $("#detail-table").datagrid("load");
+
+                },
+                // onClickCell: function(rowIndex, field, value){
+                //     // 单击获取logDetail id
+                //     // chosedLogDetailId = rowData.id;
+                // },
+                onDblClickRow: function (rowIndex, rowData) {
+                    // 双击编辑
+                    if (editingRowIndexLogDetail != null){
+                        $('#detail-table').datagrid('cancelEdit', editingRowIndexLogDetail);
+                    }
+
+                    $('#detail-table').datagrid('beginEdit', rowIndex);
+                    editingRowIndexLogDetail = rowIndex;
+
+
+                    $('#detail-table').datagrid('showColumn', 'seq');//列的field值
+                },
+                onBeforeEdit:function(index,row){
+                    row.editing = true;
+                    updateActions('#detail-table',index);
+
+                    $("#save-logDetail").linkbutton('enable');
+                    $("#cancel-logDetail").linkbutton('enable');
+                },
+                onAfterEdit:function(index,row){
+                    row.editing = false;
+                    updateActions('#detail-table',index);
+
+                    $("#save-logDetail").linkbutton('disable');
+                    $("#cancel-logDetail").linkbutton('disable');
+                },
+                onCancelEdit:function(index,row){
+                    row.editing = false;
+                    updateActions('#detail-table',index);
+
+                    $("#save-logDetail").linkbutton('disable');
+                    $("#cancel-logDetail").linkbutton('disable');
+                },
+                onLoadSuccess:function () {
+                    loadSwitchButton();
+                    loadButton();
+                    // $("#detail-table").datagrid('enableDnd');
+                },
+                rowStyler: function(index,row){
+                    if (row.status == 1){
+                        return 'background-color:#BFBFBF;'; // return inline style
+                        // the function can return predefined css class and inline style
+                        // return {class:'r1', style:{'color:#fff'}};
+                    }
+                },
+                onSelect:function () {
+                    $("#del-logDetail").linkbutton('enable');
+                }
+            });
+        }
+
+        function myselfFormatTime( value ) {
+            if (value >= 60) {
+                var hours1 = value/60;
+                return Math.round(hours1*10)/10 +" h";//保留一位小数
+            }else{
+                return value +" min";
+            }
+        }
+
+        // function setUseTime(value , row ,index ) {
+        //     console.log(value+" "+row+" "+index);
+        //
+        // }
+        function setNowDateTime(index) {
+            var nowDateTimeStr = getNowDateTime();
+            var rows = $("#detail-table").datagrid('getData').rows;
+            var rowData = rows[index];
+            rowData.useTime = nowDateTimeStr;
+            $('#detail-table').datagrid('refreshRow', index); //然后刷新该行即可
+        }
+
+        function getNowDateTime() {
+            var date = new Date();
+            var month = date.getMonth() + 1;
+
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var hours = date.getHours();
+            if (hours >=0 && hours <= 9) {
+                if (hours == 0) {
+                    hours = "00";
+                } else{
+                    hours = "0" + hours;
+                }
+            }
+            var minutes = date.getMinutes();
+            if (minutes >=0 && minutes <= 9) {
+                if (minutes == 0) {
+                    minutes = "00";
+                } else{
+                    minutes = "0" + minutes;
+                }
+            }
+            var seconds = date.getSeconds();
+            if (seconds >=0 && seconds <= 9) {
+                if (seconds == 0) {
+                    seconds = "00";
+                } else{
+                    seconds = "0" + seconds;
+                }
+            }
+            var currentdate = date.getFullYear()+"-"+ month+"-"+strDate+" "+hours+":"+minutes+":"+ ":"+seconds;
+            return currentdate ;
+        }
+
+        function loadButton(){
+            $('.easyui-linkbutton').linkbutton({
+            });
+        }
+
+        function loadSwitchButton(){
+            $(".easyui-switchbutton").switchbutton({
+                onText:"完成",
+                offText:"未完成",
+                onChange: function (checked) {
+                    // var rowIndex = $(this).val();
+                    // var data = document.querySelector(this).dataset;
+                    var rowIndex = $(this).data('index');
+
+                    var rows = $('#detail-table').datagrid('getRows');    // get current page rows
+                    chosedLogDetailId = rows[rowIndex].id;    // your row data
+                    var type=1;
+                    if(checked){
+                        type=1;
+                    }else{
+                        type=2;
+                    }
+                    console.log(this);
+                    // console.log(chosedLogDetailId);
+                    //ajax请求接口
+                    $.ajax({
+                        type: 'POST',
+                        url: '/workdaily/log-detail/update.do' ,
+                        data: {
+                            "id":rows[rowIndex].id,
+                            "status":type
+                        },
+                        success: function(data){
+                            if ( showResult(data)){
+                                $('#detail-table').datagrid('reload');
+                            }
+
+                        }
+                    });
+
+                }
+            });
+        }
+
+        $("#cancel-logDetail").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            if (editingRowIndexLogDetail != null) {
+                $('#detail-table').datagrid('cancelEdit', editingRowIndexLogDetail);
+            }else {
+                $.messager.show({
+                    title:'提示',
+                    msg:"无正在编辑的日志明细行，无法取消编辑",
+                    showType:'show'
+                });
+            }
+            loadSwitchButton();
+            editingRowIndexLogDetail = null;
+            $('#detail-table').datagrid('hideColumn', 'seq');//列的field值
+        });
+
+        $("#save-logDetail").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            if(editingRowIndexLogDetail == null){
+                $.messager.show({
+                    title:'提示',
+                    msg:"请先选择一行日志进入编辑状态",
+                    showType:'show'
+                });
+                return false;
+            }
+            $('#detail-table').datagrid('endEdit', editingRowIndexLogDetail);
+            var rows = $('#detail-table').datagrid('getRows');    // get current page rows
+            var row = rows[editingRowIndexLogDetail];    // your row data
+            editingRowIndexLogDetail = null;
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/log-detail/update.do' ,
+                data: row,
+                success: function(data){
+                    if ( showResult(data)){
+                        $('#detail-table').datagrid('reload');
+                        $('#detail-table').datagrid('hideColumn', 'seq');//列的field值
+                    }
+
+                }
+            });
+        });
+
+        $("#del-logDetail").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            if (chosedLogDetailId == null){
+                $.messager.alert(
+                    "","请选中一行明细数据","error"
+                );
+                return false;
+            }
+
+            $.messager.confirm('', '删除当前数据？', function(r){
+                if (r){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/workdaily/log-detail/delete.do' ,
+                        data: {
+                            "id":chosedLogDetailId
+                        } ,
+                        success: function(data){
+                            if ( showResult(data)){
+                                $('#detail-table').datagrid('reload');
+                                chosedLogDetailId = null;
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        $("#add-logDetail-ok").click(function () {
+            if ($(this).linkbutton('options').disabled == true) {
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/log-detail/add.do' ,
+                data: {
+                    "seq":$("#add-logDetail-seq").val(),
+                    "content":$("#add-logDetail-content").val(),
+                    "status": 2,
+                    "logId":chosedLogId,
+                    "useTime":$("#add-logDetail-useTime").val(),
+                    "remark":$("#add-logDetail-remark").val()
+                } ,
+                success: function(data){
+                    if ( showResult(data)){
+                        $('#add-logDetail-page').window('close');
+                        $('#detail-table').datagrid('reload');
+                        console.log($('#add-logDetail-ok').html());
+                    }
+
+
+                }
+            });
+        });
+
+        $("#add-log-type").combobox({
+            onChange: function (newValue, oldValue) {
+                var type = $('#add-log-type').combobox('getValue');
+                if (type == 7){//日结
+                    $('#add-log-status').combobox('setValue',"1");
+                }
+            }
+        });
+
+        $("#add-logDetail").click(function () {
+            $('#add-logDetail-page').window('open');
+
+            // 清除原文本框的值
+            $("#add-logDetail-content").textbox("setValue","");
+            $("#add-logDetail-useTime").numberbox("setValue","");
+            var seq = $("#add-logDetail-seq").numberbox("getValue");
+            console.log(seq);
+            if (seq == undefined || seq == null || seq == "") {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/workdaily/log-detail/getMaxSeq.do' ,
+                    data: {
+                        "logId":chosedLogId,
+                    } ,
+                    success: function(data){
+                        if ( showResult(data , false)){
+                            $("#add-logDetail-seq").numberbox("setValue",data.data);
+                        }
+
+                    }
+                });
+            }else if (!isNaN(seq)) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/workdaily/log-detail/getMaxSeq.do' ,
+                    data: {
+                        "logId":chosedLogId,
+                    } ,
+                    success: function(data){
+                        if ( showResult(data , false)){
+                            $("#add-logDetail-seq").numberbox("setValue",data.data);
+                        }
+
+                    }
+                });
+                $("#add-logDetail-seq").numberbox("setValue",parseInt(seq)+1);
+            }
+        });
+
+        
+        function changeProjectId() {
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/user/getUserById.do' ,
+                data: {
+                    "id":"dengping",// 默认用户 dengping
+                } ,
+                async: false,
+                success: function(data){
+                    if ( showResult(data , false)){
+                        console.log(data);
+                        if (data.data.nowProject != null) {
+                            $("#select-log-projectId").combobox('setValue',data.data.nowProject);
+                        }
+                    }
+
+                }
+            });
+           
+        }
+        // // 根据index 设置id
+        // function setChosedLogDetailId(rowIndex) {
+        //     console.log("onclick");
+        //     console.log(rowIndex);
+        //         var rows = $('#detail-table').datagrid('getRows');    // get current page rows
+        //         chosedLogDetailId = rows[rowIndex].id;    // your row data
+        // }
+
+
+    });
+
+</script>
+</html>

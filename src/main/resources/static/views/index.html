@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工作日志管理系统</title>
+    <link rel="stylesheet" type="text/css" href="..//themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="..//themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="..//css/icon.css">
+    <script type="text/javascript" src="..//jquery.min.js"></script>
+    <script type="text/javascript" src="../../locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="..//jquery.easyui.min.js"></script>
+
+    <style>
+        .wu-header { height:55px; position:relative; z-index:0; overflow:hidden; border-bottom:1px #95b8e7 solid; background:url(..//images/bg_header.jpg) bottom repeat-x;}
+        .wu-header-left { position:absolute; z-index:1; left:15px; top:0;}
+        .wu-header-left h1 { font:20px/20px Verdana; color:#fff;}
+        .wu-header-right { position:absolute; z-index:1; right:5px; top:0; color:#fff; text-align:right;}
+        .wu-header-right p { line-height:0.7em;}
+        .wu-header-right a { color:#fff; margin:0 5px;}
+
+        .wu-sidebar { width:200px;}
+        .wu-side-tree .tree-node { padding:3px 0px; }
+        .wu-side-tree a { display:block;}
+        .wu-side-tree li a { color:black;text-decoration:none}
+        .wu-side-tree .tree-node-selected { padding:2px 0; border:1px #fade23 solid;}
+
+        /*去掉easyui tabs右侧滚动条*/
+        .layout-panel-center .panel-body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+<div class="wu-header" data-options="region:'north',border:false">
+    <div class="wu-header-left">
+        <h1>工作日志管理系统</h1>
+    </div>
+    <div class="wu-header-right" >
+        <p><strong class="easyui-tooltip" title="2条未读消息">admin</strong>，欢迎您！</p>
+        <p><a href="#">信息修改</a>|<a href="#">安全退出</a></p>
+    </div>
+</div>
+
+<div data-options="region:'west',split:true,title:'导航菜单'" class="wu-sidebar"  >
+    <!--<div id="nav" class="easyui-accordion" fit="true" border="false">-->
+        <!--&lt;!&ndash;  导航内容 &ndash;&gt;-->
+
+    <!--</div>-->
+    <div id="menu" class="easyui-accordion" data-options="border:false,fit:true">
+        <div title="日志管理" data-options="iconCls:'icon-folder'" style="padding:5px; ">
+            <ul class="easyui-tree wu-side-tree" >
+                <li iconCls="icon-collapse-all"><a href="javascript:void(0)"  data-link="log/workLog.html"  iframe="0">工作日志</a></li>
+                <li iconCls="icon-collapse-all"><a href="javascript:void(0)"  data-link="log/project.html"  iframe="0">项目管理</a></li>
+            </ul>
+        </div>
+        <div title="定制生成" data-options="iconCls:'icon-folder'" style="padding:5px; ">
+            <ul class="easyui-tree wu-side-tree" >
+                <li iconCls="icon-collapse-all"><a href="javascript:void(0)"  data-link="templates/show1.html"  iframe="0">用户管理1</a></li>
+                <li iconCls="icon-collapse-all"><a href="javascript:void(0)"  data-link="templates/show2.html" data-icon="icon-collapse-all" iframe="0">用户管理2</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div data-options="region:'east',split:true,collapsed:true,title:'East'" style="width:100px;padding:10px;">east region</div>
+<div data-options="region:'south',border:false" style="text-align: center" >frees</div>
+
+<div class="wu-main" data-options="region:'center'">
+    <div id="wu-tabs" class="easyui-tabs" data-options="border:false,fit:true">
+        <div title="首页" data-options="closable:false,iconCls:'icon-tip',cls:'pd3'" ></div>
+    </div>
+</div>
+
+
+<!--tab页鼠标右键-->
+<!--<div id="mm" class="easyui-menu" style="width:150px;">-->
+    <!--<div id="mm-tabupdate">刷新</div>-->
+    <!--<div class="menu-sep"></div>-->
+    <!--<div id="mm-tabclose">关闭</div>-->
+    <!--<div id="mm-tabcloseall">全部关闭</div>-->
+    <!--<div id="mm-tabcloseother">除此之外全部关闭</div>-->
+    <!--<div class="menu-sep"></div>-->
+    <!--<div id="mm-tabcloseright">当前页右侧全部关闭</div>-->
+    <!--<div id="mm-tabcloseleft">当前页左侧全部关闭</div>-->
+    <!--<div class="menu-sep"></div>-->
+    <!--<div id="mm-exit">退出</div>-->
+<!--</div>-->
+
+<script type="text/javascript">
+    $(function(){
+
+        // 默认初始化首页
+        var title = '工作日志';
+        var url = './log/workLog.html';
+        var iconCls = $(this).attr('data-icon');
+        var iframe = $(this).attr('iframe')==1?true:false;
+        addTab(title,url,iconCls,iframe);
+
+        $('.wu-side-tree a').on('click',function(){
+            var title = $(this).text();
+            var url = $(this).attr('data-link');
+            var iconCls = $(this).attr('data-icon');
+            var iframe = $(this).attr('iframe')==1?true:false;
+            addTab(title,url,iconCls,iframe);
+        });
+    })
+
+    /**
+     * 菜单 初始化
+     */
+    // function initMenu(){
+    //     var _menus = {"menus":[
+    //             {"menuid":"1","icon":"icon-sys","menuname":"版本管理",
+    //                 "menus":[
+    //                     {"menuid":"13","menuname":"创建版本","icon":"icon-nav","url":"versionMng_create"},
+    //                     {"menuid":"14","menuname":"获取版本清单","icon":"icon-nav","url":"versionMng_getList"}
+    //                 ]
+    //             },
+    //             {"menuid":"2","icon":"icon-sys","menuname":"其他",
+    //                 "menus":[
+    //                     {"menuid":"13","menuname":"创建版本","icon":"icon-nav","url":"versionMng_create"},
+    //                     {"menuid":"14","menuname":"配置环境信息","icon":"icon-nav","url":"versionMng_conf"}
+    //                 ]
+    //             }
+    //         ]};
+    //     $("#nav").accordion({animate:false});
+    //     $.each(_menus.menus, function(i, n) {
+    //         var menulist ='';
+    //         menulist +='<ul>';
+    //         $.each(n.menus, function(j, o) {
+    //             menulist += '<li><div><a ref="'+o.menuid+'" href="#" rel="' + o.url + '" ><span class="icon '+o.icon+'" >&nbsp;</span><span class="nav">' + o.menuname + '</span></a></div></li> ';
+    //         })
+    //         menulist += '</ul>';
+    //
+    //         $('#nav').accordion('add', {
+    //             title: n.menuname,
+    //             content: menulist,
+    //             iconCls: 'icon ' + n.icon
+    //         });
+    //
+    //     });
+    //
+    //     $('.easyui-accordion li a').click(function(){
+    //         var tabTitle = $(this).children('.nav').text();
+    //
+    //         var url = $(this).attr("rel");
+    //         var menuid = $(this).attr("ref");
+    //         var icon = getIcon(menuid,icon);
+    //
+    //         addTab(tabTitle,url,icon);
+    //         $('.easyui-accordion li div').removeClass("selected");
+    //         $(this).parent().addClass("selected");
+    //     }).hover(function(){
+    //         $(this).parent().addClass("hover");
+    //     },function(){
+    //         $(this).parent().removeClass("hover");
+    //     });
+    //
+    //     //选中第一个
+    //     var panels = $('#nav').accordion('panels');
+    //     var t = panels[0].panel('options').title;
+    //     $('#nav').accordion('select', t);
+    //
+    //     // var menuInfo = '';
+    //     // $.each(_menus, function(j, menuDir) {
+    //     //     var menuListInfo = '';
+    //     //
+    //     //     $.each(menuDir.menus, function(i, menuList) {
+    //     //         menuListInfo += '<li iconCls="'+menuList.icon+'"><a href="javascript:void(0)"  data-link="'+menuList.url+'" data-icon="'+menuList.icon+'" iframe="0">'+menuList.menuname+'</a></li>';
+    //     //     });
+    //     //     menuInfo +='        <div title="'+menuDir.menuname+'" data-options="iconCls:\''+menuDir.icon+'\'" style="padding:5px;">\n' +
+    //     //         '            <ul class="easyui-tree wu-side-tree">\n' +menuListInfo+
+    //     //         '            </ul>\n' +
+    //     //         '        </div>';
+    //     // });
+    //     // // console.log(menuInfo);
+    //     // $('#menu').append(menuInfo);
+    //     // $.parser.parse();
+    // }
+
+    /**
+     * Name 选项卡初始化
+     */
+    $('#wu-tabs').tabs({
+        // tools:[{
+        //     iconCls:'icon-reload',
+        //     border:false,
+        //     handler:function(){
+        //
+        //     }
+        // }]
+    });
+
+    /**
+     * Name 添加菜单选项
+     * Param title 名称
+     * Param href 链接
+     * Param iconCls 图标样式
+     * Param iframe 链接跳转方式（true为iframe，false为href）
+     */
+    function addTab(title, href, iconCls, iframe){
+            var tabPanel = $('#wu-tabs');
+        if(!tabPanel.tabs('exists',title)){
+            var content = '<iframe scrolling="auto" frameborder="0"  src="'+ href +'" style="width:100%;height:100%;overflow:hidden"></iframe>';
+            // if(iframe){
+                tabPanel.tabs('add',{
+                    title:title,
+                    content:content,
+                    // iconCls:iconCls,
+                    fit:true,
+                    cls:'pd3',
+                    closable:true
+                });
+            // }
+            // else{
+            //     tabPanel.tabs('add',{
+            //         title:title,
+            //         href:href,
+            //         // iconCls:iconCls,
+            //         fit:true,
+            //         cls:'pd3',
+            //         closable:true
+            //     });
+            // }
+        }
+        else
+        {
+            tabPanel.tabs('select',title);
+        }
+    }
+    /**
+     * Name 移除菜单选项
+     */
+    // function removeTab() {
+    //     var tabPanel = $('#wu-tabs');
+    //     var tab = tabPanel.tabs('getSelected');
+    //     if (tab) {
+    //         var index = tabPanel.tabs('getTabIndex', tab);
+    //         tabPanel.tabs('close', index);
+    //     }
+    // }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>项目管理</title>
+
+    <link rel="stylesheet" type="text/css" href="../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css">
+    <script type="text/javascript" src="../../jquery.min.js"></script>
+    <script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../myJs/comm.js"></script>
+</head>
+<body>
+<div style="margin-top:30px;margin-left: 10px;margin-right: 10px">
+<table  id="dg" ></table>
+    <div id="tb" style="padding:2px 5px;">
+
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="$('#w').window('open')"></a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" id="save-log"></a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="cancel-log"></a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="del-log"></a>
+    </div>
+
+    <div id="w" class="easyui-window" title="新增项目" data-options="closed:true" style="width:500px;padding:10px;">
+        <div style="margin:20px">
+
+            <div style="margin-bottom:20px">
+                <div>标题:</div>
+                <input class="easyui-textbox easyui-validatebox" data-options="prompt:'标题'" style="width:100%;height:32px" required="true" id="add-log-title">
+            </div>
+
+            <div>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" style="width:40%;height:32px" id="add-log-ok"  >确定</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" style="width:40%;height:32px" id="add-log-cancel" onclick="$('#w').window('close')">取消</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        // 当前选中的log行 的id
+        var chosedLogId = null;
+        // 当前处于编辑状态中的行的 index
+        var editingRowIndex = null;
+
+        $('#dg').datagrid({
+            url:'/workdaily/project/query.do',
+            method: "post",
+            toolbar: "#tb",
+            footer:"#ft",
+            idField: "id",
+            singleSelect: true,
+            fitColumns: true,
+            columns:[[
+                {field:'id',title:'Code',hidden:true},
+                {field:'name',title:'项目名',width: 400,
+                    editor: {
+                        type: 'text'
+                    }
+                }
+            ]],
+            loadFilter: function(data){
+                return data.data;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                // 单击获取log id
+                chosedLogId = rowData.id;
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                // 双击编辑
+                if (editingRowIndex != null){
+                    $('#dg').datagrid('cancelEdit', editingRowIndex);
+                }
+
+                $('#dg').datagrid('beginEdit', rowIndex);
+                editingRowIndex = rowIndex;
+
+            },
+            onBeforeEdit:function(index,row){
+                row.editing = true;
+                updateActions(index);
+            },
+            onAfterEdit:function(index,row){
+                row.editing = false;
+                updateActions(index);
+            },
+            onCancelEdit:function(index,row){
+                row.editing = false;
+                updateActions(index);
+            }
+        });
+
+        $("#search").click(function () {
+            $('#dg').datagrid('reload');
+        });
+
+        $("#add-log-ok").click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/project/add.do' ,
+                data: {
+                    "name":$("#add-log-title").val()
+                } ,
+                success: function(data){
+                    if ( showResult(data)){
+                        $('#dg').datagrid('reload');
+                        $('#w').window('close');
+                    }
+                }
+            });
+        });
+
+        $("#del-log").click(function () {
+            if (chosedLogId == null){
+                $.messager.alert(
+                    "","请选中一行数据","error"
+                );
+                return false;
+            }
+
+            $.messager.confirm('', '删除当前数据？', function(r){
+                if (r){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/workdaily/project/delete.do' ,
+                        data: {
+                            "id":chosedLogId
+                        } ,
+                        success: function(data){
+                            if ( showResult(data)){
+                                $('#dg').datagrid('reload');
+                                chosedLogId = null;
+                            }
+                        }
+                    });
+                }
+            });
+
+
+
+        });
+        $("#cancel-log").click(function () {
+            $('#dg').datagrid('cancelEdit', editingRowIndex);
+            editingRowIndex = null;
+        });
+
+        $("#save-log").click(function () {
+            $('#dg').datagrid('endEdit', editingRowIndex);
+            var rows = $('#dg').datagrid('getRows');    // get current page rows
+            var row = rows[editingRowIndex];    // your row data
+            console.log(row);
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/project/update.do' ,
+                data: row,
+                success: function(data){
+                    if ( showResult(data)){
+                        $('#dg').datagrid('reload');
+                    }
+
+                }
+            });
+        });
+
+        function updateActions(index) {
+            $('#dg').datagrid('updateRow', {
+                index: index,
+                row: {}
+            });
+        }
+
+        function getRowIndex(target){
+            var tr = $(target).closest('tr.datagrid-row');
+            return parseInt(tr.attr('datagrid-row-index'));
+        }
+
+
+    });
+
+</script>
+</html>

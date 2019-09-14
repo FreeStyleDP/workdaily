@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>日子管理系统</title>
+
+    <link rel="stylesheet" type="text/css" href="../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css">
+    <script type="text/javascript" src="../../jquery.min.js"></script>
+    <script type="text/javascript" src="../../locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+
+</head>
+<body style="background-color: #393D49">
+<form id="myForm" method="post">
+<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+
+    <!--登录框-->
+    <div class="easyui-panel " title="登录" style="width:400px;padding:30px 60px;">
+        <div style="margin-bottom:20px">
+            <!--<div>Email:</div>-->
+            <input class="easyui-textbox easyui-validatebox" data-options="prompt:'账号'" style="width:100%;height:32px" required="true">
+        </div>
+        <div style="margin-bottom:20px">
+            <!--<div>First Name:</div>-->
+            <input class="easyui-passwordbox easyui-validatebox" data-options="prompt:'密码'" style="width:100%;height:32px" required="true">
+        </div>
+
+
+        <div>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" style="width:100%;height:32px" id="login"  type="submit">登录</a>
+        </div>
+
+        <div align="center">
+            <br>
+            <a   href="register.html">注册</a>
+            <br>
+            <a   href="#">忘记密码</a>
+        </div>
+
+    </div>
+
+</div>
+</form>
+</body>
+<script>
+
+    $(function () {
+
+
+        // // 注册事件
+        $("#login").click(function () {
+            window.location.href = '../index.html';
+        });
+
+    });
+</script>
+</html>

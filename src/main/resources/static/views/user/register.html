@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>日子管理系统</title>
+
+    <link rel="stylesheet" type="text/css" href="../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css">
+    <script type="text/javascript" src="../../jquery.min.js"></script>
+    <script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../myJs/comm.js"></script>
+
+</head>
+<body style="background-color: #393D49">
+<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+
+    <!--登录框-->
+    <div class="easyui-panel " title="注册" style="width:400px;padding:30px 60px;">
+        <div style="margin-bottom:20px">
+            <!--<div>Email:</div>-->
+            <input class="easyui-textbox" data-options="prompt:'账号'" style="width:100%;height:32px" id="id">
+        </div>
+        <div style="margin-bottom:20px">
+            <!--<div>Email:</div>-->
+            <input class="easyui-textbox" data-options="prompt:'姓名'" style="width:100%;height:32px" id="name">
+        </div>
+        <div style="margin-bottom:20px">
+            <!--<div>First Name:</div>-->
+            <input class="easyui-passwordbox" data-options="prompt:'密码'" style="width:100%;height:32px" id="password">
+        </div>
+        <div style="margin-bottom:20px">
+            <!--<div>First Name:</div>-->
+            <input class="easyui-passwordbox" data-options="prompt:'确认密码'" style="width:100%;height:32px" id="repeatPassword">
+        </div>
+        <!--<div style="margin-bottom:20px">-->
+            <!--<div>Last Name:</div>-->
+            <!--<input class="easyui-textbox" style="width:100%;height:32px">-->
+        <!--</div>-->
+        <!--<div style="margin-bottom:20px">-->
+            <!--<div>Company:</div>-->
+            <!--<input class="easyui-textbox" style="width:100%;height:32px">-->
+        <!--</div>-->
+        <div>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" style="width:100%;height:32px" id="login">注册</a>
+        </div>
+
+        <div align="center">
+            <br>
+            <a   href="login.html">登录</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+<script>
+    $(function () {
+
+        // 注册事件
+        $("#login").click(function () {
+
+            //校验两次密码是否一样
+            var password = $(".easyui-passwordbox").first().val();
+            var repeatPassword = $(".easyui-passwordbox").last().val();
+            if (password != repeatPassword){
+                $.messager.show({
+                    title:'错误',
+                    msg:'两次密码输入不一致',
+                    showType:'show'
+                });
+                return false;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/workdaily/user/add.do' ,
+                data: {
+                    "id":$("#id").val(),
+                    "name":$("#name").val(),
+                    "password":$("#password").val()
+                } ,
+                success: function(data){
+                    if ( showResult(data)){
+                        window.location.href = '/views/login.html';
+                    }
+                }
+            });
+
+        });
+
+
+
+    })
+
+</script>
+</html>
