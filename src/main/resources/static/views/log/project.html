@@ -57,6 +57,12 @@
             fitColumns: true,
             columns:[[
                 {field:'id',title:'Code',hidden:true},
+                {field:'seq',title:'序号',
+                    editor: {
+                        type: 'numberbox'
+                    }
+                },
+
                 {field:'name',title:'项目名',width: 400,
                     editor: {
                         type: 'text'

@@ -1,14 +1,15 @@
 package com.frees.workdaily.error;
 
-public class BusinessException extends RuntimeException implements CommonError{
+public class BusinessException extends RuntimeException implements CommonError {
 
     private CommonError commonError;
 
-    public BusinessException(CommonError commonError){
+    public BusinessException(CommonError commonError) {
         super();
         this.commonError = commonError;
     }
-    public BusinessException(CommonError commonError , String msg ){
+
+    public BusinessException(CommonError commonError, String msg) {
         super();
         this.commonError = commonError;
         this.commonError.setErrMsg(msg);
