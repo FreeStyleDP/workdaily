@@ -11,7 +11,7 @@ logging:
     root: warm
     com.frees.mybatisplus.dao: trace
   pattern:
-    console: ' %p%m%n'
+    console: ' %p %m %n'
 
 # mybatis-plus
 mybatis-plus:
